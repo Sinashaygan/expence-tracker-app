@@ -1,12 +1,9 @@
+import ExpensesOutput from "@/components/expenses-output/ExpensesOutput";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function AllExpensesScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>All Expenses</Text>
-
-      <Text style={styles.emptyText}>All expenses will appear here.</Text>
-    </View>
+    <ExpensesOutput expensesPeriod='Total'/>
   );
 }
 

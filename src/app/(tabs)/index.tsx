@@ -1,22 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
+import ExpensesOutput from "@/components/expenses-output/ExpensesOutput";
 
 export default function RecentExpensesScreen() {
   function handleAddExpense() {
     router.push("/manage-expense");
   }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Recent Expenses</Text>
-
-      <Text style={styles.emptyText}>No expenses added yet.</Text>
-
-      <Pressable style={styles.button} onPress={handleAddExpense}>
-        <Text style={styles.buttonText}>Add Expense</Text>
-      </Pressable>
-    </View>
-  );
+  return <ExpensesOutput expensesPeriod="Last 7 Days"/>;
 }
 
 const styles = StyleSheet.create({
