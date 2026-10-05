@@ -16,6 +16,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Recent Expenses",
+          tabBarLabel: "Recent",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time-outline" size={size} color={color} />
           ),
@@ -26,6 +27,7 @@ export default function TabsLayout() {
         name="all-expenses"
         options={{
           title: "All Expenses",
+          tabBarLabel: "All Expenses",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list-outline" size={size} color={color} />
           ),
