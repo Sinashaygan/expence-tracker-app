@@ -40,7 +40,7 @@ export default function ExpensesOutput({ expenses, periodName }: Props) {
   return (
     <View>
       <ExpensesSummery expenses={DUMMY_EXPENSES} periodName={periodName} />
-      <ExpensesList />
+      <ExpensesList expenses={DUMMY_EXPENSES}/>
     </View>
   );
 }
