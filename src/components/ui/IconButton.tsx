@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 interface Props {
   icon: ComponentProps<typeof Ionicons>["name"];
   size: number;
-  color: string;
+  color: ComponentProps<typeof Ionicons>["color"];
   onPress: () => void;
 }
 
