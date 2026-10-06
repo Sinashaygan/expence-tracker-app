@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
+    minWidth: 80,
   },
 
   amount: {
