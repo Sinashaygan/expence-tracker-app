@@ -1,4 +1,5 @@
 import { GlobalStyles } from "@/constants/theme";
+import { getFormattedDate } from "@/utils/date";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
@@ -16,9 +17,7 @@ function ExpenseItem({ description, amount, date }: Props) {
             {description}
           </Text>
 
-          <Text style={styles.textBase}>
-            {date.toLocaleDateString("en-US")}
-          </Text>
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
         </View>
 
         <View style={styles.amountContainer}>
