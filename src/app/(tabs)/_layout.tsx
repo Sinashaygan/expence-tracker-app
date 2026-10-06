@@ -12,12 +12,14 @@ export default function TabsLayout() {
         tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
         headerRight: ({ tintColor }) => {
-          <IconButton
-            icon="add"
-            size={24}
-            color={tintColor ?? "white"}
-            onPress={() => router.push("/manage-expense")}
-          />;
+          return (
+            <IconButton
+              icon="add"
+              size={24}
+              color={tintColor ?? "white"}
+              onPress={() => router.push("/manage-expense")}
+            />
+          );
         },
       }}
     >
