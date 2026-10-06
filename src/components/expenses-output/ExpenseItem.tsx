@@ -7,16 +7,22 @@ interface Props {
   description: string;
   amount: number;
   date: Date;
+  id: number;
 }
 
-function ExpenseItem({ description, amount, date }: Props) {
-
-    function expensePressHandler(){
-      router.push("/manage-expense");
-    }
+function ExpenseItem({ id, description, amount, date }: Props) {
+  function expensePressHandler() {
+    router.push({
+      pathname: "/manage-expense",
+      params: { expenseId: id },
+    });
+  }
 
   return (
-    <Pressable onPress={expensePressHandler} style={({pressed})=> pressed && styles.pressed}>
+    <Pressable
+      onPress={expensePressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
+    >
       <View style={styles.expenseItem}>
         <View>
           <Text style={[styles.textBase, styles.description]}>
