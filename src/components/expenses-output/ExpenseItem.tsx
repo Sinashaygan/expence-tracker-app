@@ -1,5 +1,6 @@
 import { GlobalStyles } from "@/constants/theme";
 import { getFormattedDate } from "@/utils/date";
+import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
@@ -9,7 +10,11 @@ interface Props {
 }
 
 function ExpenseItem({ description, amount, date }: Props) {
-    function expensePressHandler(){}
+
+    function expensePressHandler(){
+      router.push("/manage-expense");
+    }
+
   return (
     <Pressable onPress={expensePressHandler} style={({pressed})=> pressed && styles.pressed}>
       <View style={styles.expenseItem}>

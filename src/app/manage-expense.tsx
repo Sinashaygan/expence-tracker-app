@@ -1,5 +1,7 @@
+import { View } from "react-native";
+
 export default function ManageExpense() {
   return (
-    <div>manage-expense</div>
+    <View>manage-expense</View>
   )
 }
