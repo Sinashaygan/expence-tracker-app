@@ -8,9 +8,7 @@ interface Props {
 }
 
 const renderExpenseItem: ListRenderItem<Expense> = ({ item }) => {
-  const { id, ...expenseData } = item;
-
-  return <ExpenseItem {...expenseData} />;
+  return <ExpenseItem {...item} />;
 };
 
 

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 interface Props {
   expenses: Expense[];
-  periodName?: string;
+  periodName: string;
 }
 
 export default function ExpensesSummery({ periodName, expenses }: Props) {
@@ -15,7 +15,7 @@ export default function ExpensesSummery({ periodName, expenses }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.period}>{periodName ?? "Expenses"}</Text>
+      <Text style={styles.period}>{periodName}</Text>
       <Text style={styles.sum}>${expensesSum.toFixed(2)}</Text>
     </View>
   );

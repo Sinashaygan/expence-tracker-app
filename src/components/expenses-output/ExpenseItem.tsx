@@ -7,7 +7,7 @@ interface Props {
   description: string;
   amount: number;
   date: Date;
-  id: number;
+  id: string;
 }
 
 function ExpenseItem({ id, description, amount, date }: Props) {
