@@ -1,8 +1,14 @@
+import { GlobalStyles } from "@/constants/theme";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: "white",
+      }}
+    >
       <Stack.Screen
         name="(tabs)"
         options={{
@@ -14,6 +20,7 @@ export default function RootLayout() {
         name="manage-expense"
         options={{
           title: "Manage Expense",
+          presentation:'modal'
         }}
       />
     </Stack>
