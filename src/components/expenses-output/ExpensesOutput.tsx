@@ -1,7 +1,8 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import ExpensesSummery from "./ExpensesSummery";
 import ExpensesList from "./ExpensesList";
 import { Expense } from "@/constants/expenses.types";
+import { GlobalStyles } from "@/constants/theme";
 
 interface Props {
   expenses?: Expense[];
@@ -38,9 +39,17 @@ const DUMMY_EXPENSES = [
 
 export default function ExpensesOutput({ expenses, periodName }: Props) {
   return (
-    <View>
+    <View style={styles.container}>
       <ExpensesSummery expenses={DUMMY_EXPENSES} periodName={periodName} />
-      <ExpensesList expenses={DUMMY_EXPENSES}/>
+      <ExpensesList expenses={DUMMY_EXPENSES} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 24,
+    flex: 1,
+    backgroundColor: GlobalStyles.colors.primary700,
+  },
+});
