@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import Input from "./Input";
 import Button from "../ui/Button";
 import { GlobalStyles } from "@/constants/theme";
+import { addExpense } from "@/constants/expenses.types";
 
 type InputIdentifier = "amount" | "date" | "description";
 
 interface Props {
   onCancel: () => void;
-  onSubmit: () => void;
+  onSubmit: (expenseData: addExpense) => void;
   isEditing: boolean;
 }
 
@@ -27,6 +28,16 @@ export default function ExpenseForm({ onCancel, onSubmit, isEditing }: Props) {
       ...currentValues,
       [inputIdentifier]: enteredValue,
     }));
+  }
+
+  function submitHandler() {
+    const expenseData = {
+      amount: Number(inputValues.amount),
+      date: new Date(inputValues.date),
+      description: inputValues.description,
+    };
+
+    onSubmit(expenseData);
   }
 
   return (
@@ -74,7 +85,7 @@ export default function ExpenseForm({ onCancel, onSubmit, isEditing }: Props) {
           Cancel
         </Button>
 
-        <Button style={styles.button} onPress={onSubmit}>
+        <Button style={styles.button} onPress={submitHandler}>
           {isEditing ? "Update" : "Add"}
         </Button>
       </View>
@@ -85,7 +96,7 @@ export default function ExpenseForm({ onCancel, onSubmit, isEditing }: Props) {
 const styles = StyleSheet.create({
   form: {
     width: "100%",
-    marginVertical:48
+    marginVertical: 48,
   },
 
   title: {

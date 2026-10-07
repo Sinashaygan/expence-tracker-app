@@ -1,5 +1,6 @@
 import ExpenseForm from "@/components/manage-expense/ExpenseForm";
 import IconButton from "@/components/ui/IconButton";
+import { addExpense } from "@/constants/expenses.types";
 import { GlobalStyles } from "@/constants/theme";
 import { ExpensesContext } from "@/store/expenses-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -30,19 +31,11 @@ export default function ManageExpense() {
     router.back();
   }
 
-  function confirmHandler() {
+  function confirmHandler(expenseData: addExpense) {
     if (isEditing && expenseId) {
-      updateExpense(expenseId, {
-        description: "Updated pair of shoes",
-        amount: 79.99,
-        date: new Date(),
-      });
+      updateExpense(expenseId, expenseData);
     } else {
-      addExpense({
-        description: "A new pair of shoes",
-        amount: 49.99,
-        date: new Date(),
-      });
+      addExpense(expenseData);
     }
 
     router.back();

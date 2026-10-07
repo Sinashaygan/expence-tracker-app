@@ -3,4 +3,10 @@ export interface Expense {
   description: string;
   amount: number;
   date: Date;
+
+}
+export interface addExpense {
+  description: string;
+  amount: number;
+  date: Date;
 }
