@@ -124,20 +124,19 @@ export default function ExpenseForm({
       <View style={styles.inputsRow}>
         <Input
           label="Amount"
+          invalid={!inputValues.amount.isValid}
           textInputConfig={{
             keyboardType: "decimal-pad",
             onChangeText: (enteredValue) =>
               inputChangedHandler("amount", enteredValue),
             value: inputValues.amount.value,
           }}
-          customStyle={[
-            styles.rowInput,
-            !inputValues.amount.isValid && styles.invalidInput,
-          ]}
+          customStyle={styles.rowInput}
         />
 
         <Input
           label="Date"
+          invalid={!inputValues.date.isValid}
           textInputConfig={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
@@ -145,15 +144,13 @@ export default function ExpenseForm({
               inputChangedHandler("date", enteredValue),
             value: inputValues.date.value,
           }}
-          customStyle={[
-            styles.rowInput,
-            !inputValues.date.isValid && styles.invalidInput,
-          ]}
+          customStyle={styles.rowInput}
         />
       </View>
 
       <Input
         label="Description"
+        invalid={!inputValues.description.isValid}
         textInputConfig={{
           multiline: true,
           autoCorrect: false,
@@ -161,9 +158,6 @@ export default function ExpenseForm({
             inputChangedHandler("description", enteredValue),
           value: inputValues.description.value,
         }}
-        customStyle={
-          !inputValues.description.isValid ? styles.invalidInput : undefined
-        }
       />
 
       <View style={styles.actions}>
@@ -192,7 +186,7 @@ const styles = StyleSheet.create({
 
   title: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 36,
+    fontSize: 22,
     fontWeight: "700",
     textAlign: "center",
     marginBottom: 20,
@@ -201,23 +195,18 @@ const styles = StyleSheet.create({
   inputsRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    columnGap: 12,
+    columnGap: 4,
   },
 
   rowInput: {
     flex: 1,
   },
 
-  invalidInput: {
-    borderWidth: 1,
-    borderColor: GlobalStyles.colors.error500,
-  },
-
   actions: {
     flexDirection: "row",
     alignItems: "center",
     columnGap: 10,
-    marginTop: 18,
+    marginTop: 8,
   },
 
   button: {
@@ -228,8 +217,8 @@ const styles = StyleSheet.create({
 
   errorText: {
     color: GlobalStyles.colors.error500,
-    fontSize: 24,
+    fontSize: 13,
     textAlign: "center",
-    marginTop: 12,
+    marginTop: 10,
   },
 });
