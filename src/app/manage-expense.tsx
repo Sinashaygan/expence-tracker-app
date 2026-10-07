@@ -1,5 +1,6 @@
-import Button from "@/components/ui/Button";
+import ExpenseForm from "@/components/manage-expense/ExpenseForm";
 import IconButton from "@/components/ui/IconButton";
+import { ExpenseData } from "@/constants/expenses.types";
 import { GlobalStyles } from "@/constants/theme";
 import { ExpensesContext } from "@/store/expenses-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -7,14 +8,18 @@ import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
-  const { addExpense, deleteExpense, updateExpense } =
+  const { addExpense, deleteExpense, updateExpense, expenses } =
     useContext(ExpensesContext);
 
-  const { expenseId } = useLocalSearchParams<{
-    expenseId?: string;
+  const { expenseId: rawExpenseId } = useLocalSearchParams<{
+    expenseId?: string | string[];
   }>();
 
-  const isEditing = typeof expenseId === "string" && expenseId.length > 0;
+  const expenseId = typeof rawExpenseId === "string" ? rawExpenseId : undefined;
+
+  const selectedExpense = expenses.find((expense) => expense.id === expenseId);
+
+  const isEditing = Boolean(expenseId);
 
   function deleteExpenseHandler() {
     if (!expenseId) {
@@ -30,19 +35,11 @@ export default function ManageExpense() {
     router.back();
   }
 
-  function confirmHandler() {
+  function confirmHandler(expenseData: ExpenseData) {
     if (isEditing && expenseId) {
-      updateExpense(expenseId, {
-        description: "Updated pair of shoes",
-        amount: 79.99,
-        date: new Date(),
-      });
+      updateExpense(expenseId, expenseData);
     } else {
-      addExpense({
-        description: "A new pair of shoes",
-        amount: 49.99,
-        date: new Date(),
-      });
+      addExpense(expenseData);
     }
 
     router.back();
@@ -70,14 +67,13 @@ export default function ManageExpense() {
             </Text>
           </View>
 
-          <View style={styles.actions}>
-            <Button style={styles.button} mode="flat" onPress={cancelHandler}>
-              Cancel
-            </Button>
-
-            <Button style={styles.button} onPress={confirmHandler}>
-              {isEditing ? "Update" : "Add"}
-            </Button>
+          <View style={styles.formWrapper}>
+            <ExpenseForm
+              isEditing={isEditing}
+              onCancel={cancelHandler}
+              onSubmit={confirmHandler}
+              defaultValues={selectedExpense}
+            />
           </View>
 
           {isEditing && (
@@ -111,59 +107,52 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 24,
-    justifyContent: "space-between",
+    paddingTop: 20,
+    paddingBottom: 14,
   },
 
   header: {
-    marginBottom: 32,
+    marginBottom: 0,
   },
 
   title: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "700",
-    marginBottom: 8,
+    marginBottom: 5,
   },
 
   subtitle: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 11,
+    lineHeight: 16,
   },
 
-  actions: {
-    flexDirection: "row",
+  formWrapper: {
+    // flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: "auto",
-    paddingTop: 32,
-  },
-
-  button: {
-    flex: 1,
-    marginHorizontal: 6,
+    paddingTop: 48,
   },
 
   deleteSection: {
-    marginTop: 32,
-    paddingTop: 20,
+    marginTop: 8,
+    paddingTop: 13,
     borderTopWidth: 1,
-    borderTopColor: GlobalStyles.colors.primary200,
+    borderTopColor: "rgba(255, 255, 255, 0.14)",
     alignItems: "center",
   },
 
   deleteTitle: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    marginBottom: 4,
+    marginBottom: 3,
   },
 
   deleteDescription: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 14,
-    marginBottom: 14,
+    fontSize: 11,
+    marginBottom: 8,
   },
 });
+
