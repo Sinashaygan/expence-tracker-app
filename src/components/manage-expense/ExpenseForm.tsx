@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Input from "./Input";
 import Button from "../ui/Button";
+import { GlobalStyles } from "@/constants/theme";
 
 type InputIdentifier = "amount" | "date" | "description";
 
@@ -83,28 +84,21 @@ export default function ExpenseForm({ onCancel, onSubmit, isEditing }: Props) {
 
 const styles = StyleSheet.create({
   form: {
-    marginTop: 40,
-  },
-
-  actions: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "auto",
-    paddingTop: 32,
+    width: "100%",
+    marginVertical:48
   },
 
   title: {
-    marginVertical: 24,
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+    marginBottom: 22,
+    color: GlobalStyles.colors.primary50,
+    fontSize: 16,
+    fontWeight: "700",
     textAlign: "center",
   },
 
   inputsRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "flex-start",
     gap: 12,
   },
 
@@ -112,8 +106,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  actions: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 22,
+    gap: 10,
+  },
+
   button: {
     flex: 1,
-    marginHorizontal: 6,
+    minHeight: 42,
+    marginHorizontal: 0,
   },
 });
