@@ -11,5 +11,5 @@ export default function RecentExpensesScreen() {
 
     return expense.date > date7DaysAgo && expense.date <= today;
   });
-  return <ExpensesOutput expenses={recentExpenses} periodName="Last 7 Days" />;
+  return <ExpensesOutput expenses={recentExpenses} periodName="Last 7 Days" fallBackText="No expenses registered for the last 7 days."/>;
 }
