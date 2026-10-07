@@ -72,17 +72,11 @@ export default function ManageExpense() {
           </View>
 
           <View>
-            <ExpenseForm/>
-          </View>
-
-          <View style={styles.actions}>
-            <Button style={styles.button} mode="flat" onPress={cancelHandler}>
-              Cancel
-            </Button>
-
-            <Button style={styles.button} onPress={confirmHandler}>
-              {isEditing ? "Update" : "Add"}
-            </Button>
+            <ExpenseForm
+              isEditing={isEditing}
+              onCancel={cancelHandler}
+              onSubmit={confirmHandler}
+            />
           </View>
 
           {isEditing && (
@@ -136,19 +130,6 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.primary200,
     fontSize: 15,
     lineHeight: 22,
-  },
-
-  actions: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "auto",
-    paddingTop: 32,
-  },
-
-  button: {
-    flex: 1,
-    marginHorizontal: 6,
   },
 
   deleteSection: {
