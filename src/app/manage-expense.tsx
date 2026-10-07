@@ -1,6 +1,6 @@
 import ExpenseForm from "@/components/manage-expense/ExpenseForm";
 import IconButton from "@/components/ui/IconButton";
-import { addExpense } from "@/constants/expenses.types";
+import { ExpenseData } from "@/constants/expenses.types";
 import { GlobalStyles } from "@/constants/theme";
 import { ExpensesContext } from "@/store/expenses-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -8,16 +8,18 @@ import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
-  const { addExpense, deleteExpense, updateExpense ,expenses} =
+  const { addExpense, deleteExpense, updateExpense, expenses } =
     useContext(ExpensesContext);
 
-  const { expenseId } = useLocalSearchParams<{
-    expenseId?: string;
+  const { expenseId: rawExpenseId } = useLocalSearchParams<{
+    expenseId?: string | string[];
   }>();
 
-  const selectedExpense = expenses.find(expense => expense.id === expenseId)
+  const expenseId = typeof rawExpenseId === "string" ? rawExpenseId : undefined;
 
-  const isEditing = typeof expenseId === "string" && expenseId.length > 0;
+  const selectedExpense = expenses.find((expense) => expense.id === expenseId);
+
+  const isEditing = Boolean(expenseId);
 
   function deleteExpenseHandler() {
     if (!expenseId) {
@@ -33,7 +35,7 @@ export default function ManageExpense() {
     router.back();
   }
 
-  function confirmHandler(expenseData: addExpense) {
+  function confirmHandler(expenseData: ExpenseData) {
     if (isEditing && expenseId) {
       updateExpense(expenseId, expenseData);
     } else {
@@ -65,7 +67,7 @@ export default function ManageExpense() {
             </Text>
           </View>
 
-          <View>
+          <View style={styles.formWrapper}>
             <ExpenseForm
               isEditing={isEditing}
               onCancel={cancelHandler}

@@ -3,16 +3,30 @@ import { StyleSheet, Text, View } from "react-native";
 import Input from "./Input";
 import Button from "../ui/Button";
 import { GlobalStyles } from "@/constants/theme";
-import { addExpense, Expense } from "@/constants/expenses.types";
+import type { Expense, ExpenseData } from "@/constants/expenses.types";
 import { getFormattedDate } from "@/utils/date";
 
 type InputIdentifier = "amount" | "date" | "description";
 
 interface Props {
   onCancel: () => void;
-  onSubmit: (expenseData: addExpense) => void;
+  onSubmit: (expenseData: ExpenseData) => void;
   isEditing: boolean;
-  defaultValues: Expense;
+  defaultValues?: Expense;
+}
+
+type InputValues = {
+  amount: string;
+  date: string;
+  description: string;
+};
+
+function getInitialValues(defaultValues?: Expense): InputValues {
+  return {
+    amount: defaultValues ? defaultValues.amount.toString() : "",
+    date: defaultValues ? getFormattedDate(defaultValues.date) : "",
+    description: defaultValues?.description ?? "",
+  };
 }
 
 export default function ExpenseForm({
@@ -21,11 +35,9 @@ export default function ExpenseForm({
   isEditing,
   defaultValues,
 }: Props) {
-  const [inputValues, setInputValues] = useState({
-    amount: defaultValues ? defaultValues.amount.toString() : "",
-    date: defaultValues ? getFormattedDate(defaultValues.date) : "",
-    description: defaultValues ? defaultValues.description.toString() : "",
-  });
+  const [inputValues, setInputValues] = useState<InputValues>(() =>
+    getInitialValues(defaultValues),
+  );
 
   function inputChangedHandler(
     inputIdentifier: InputIdentifier,
@@ -38,10 +50,10 @@ export default function ExpenseForm({
   }
 
   function submitHandler() {
-    const expenseData = {
+    const expenseData: ExpenseData = {
       amount: Number(inputValues.amount),
       date: new Date(inputValues.date),
-      description: inputValues.description,
+      description: inputValues.description.trim(),
     };
 
     onSubmit(expenseData);
@@ -103,7 +115,6 @@ export default function ExpenseForm({
 const styles = StyleSheet.create({
   form: {
     width: "100%",
-    marginVertical: 48,
   },
 
   title: {
@@ -127,14 +138,12 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 22,
     gap: 10,
+    marginTop: 22,
   },
 
   button: {
     flex: 1,
     minHeight: 42,
-    marginHorizontal: 0,
   },
 });
