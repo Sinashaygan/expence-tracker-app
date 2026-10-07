@@ -15,17 +15,33 @@ interface Props {
   defaultValues?: Expense;
 }
 
+type InputState = {
+  value: string;
+  isValid: boolean;
+};
+
 type InputValues = {
-  amount: string;
-  date: string;
-  description: string;
+  amount: InputState;
+  date: InputState;
+  description: InputState;
 };
 
 function getInitialValues(defaultValues?: Expense): InputValues {
   return {
-    amount: defaultValues ? defaultValues.amount.toString() : "",
-    date: defaultValues ? getFormattedDate(defaultValues.date) : "",
-    description: defaultValues?.description ?? "",
+    amount: {
+      value: defaultValues ? defaultValues.amount.toString() : "",
+      isValid: true,
+    },
+
+    date: {
+      value: defaultValues ? getFormattedDate(defaultValues.date) : "",
+      isValid: true,
+    },
+
+    description: {
+      value: defaultValues?.description ?? "",
+      isValid: true,
+    },
   };
 }
 
@@ -45,28 +61,61 @@ export default function ExpenseForm({
   ) {
     setInputValues((currentValues) => ({
       ...currentValues,
-      [inputIdentifier]: enteredValue,
+      [inputIdentifier]: {
+        value: enteredValue,
+        isValid: true,
+      },
     }));
   }
 
   function submitHandler() {
-    const expenseData: ExpenseData = {
-      amount: Number(inputValues.amount),
-      date: new Date(inputValues.date),
-      description: inputValues.description.trim(),
-    };
+    const amount = Number(inputValues.amount.value);
+    const date = new Date(inputValues.date.value);
+    const description = inputValues.description.value.trim();
 
-    const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
-    const dateIsValid = expenseData.date.toString() !== "Invalid Date";
-    const descriptionIsValid = expenseData.description.trim().length > 0;
+    const amountIsValid = !isNaN(amount) && amount > 0;
+    const dateIsValid =
+      inputValues.date.value.trim().length > 0 && !isNaN(date.getTime());
+    const descriptionIsValid = description.length > 0;
+
+    setInputValues((currentValues) => ({
+      amount: {
+        ...currentValues.amount,
+        isValid: amountIsValid,
+      },
+
+      date: {
+        ...currentValues.date,
+        isValid: dateIsValid,
+      },
+
+      description: {
+        ...currentValues.description,
+        isValid: descriptionIsValid,
+      },
+    }));
 
     if (!amountIsValid || !dateIsValid || !descriptionIsValid) {
-      Alert.alert("Invalid input", "Please check your input values");
+      Alert.alert(
+        "Invalid input",
+        "Please check the entered amount, date, and description.",
+      );
       return;
     }
 
+    const expenseData: ExpenseData = {
+      amount,
+      date,
+      description,
+    };
+
     onSubmit(expenseData);
   }
+
+  const formIsInvalid =
+    !inputValues.amount.isValid ||
+    !inputValues.date.isValid ||
+    !inputValues.description.isValid;
 
   return (
     <View style={styles.form}>
@@ -79,9 +128,12 @@ export default function ExpenseForm({
             keyboardType: "decimal-pad",
             onChangeText: (enteredValue) =>
               inputChangedHandler("amount", enteredValue),
-            value: inputValues.amount,
+            value: inputValues.amount.value,
           }}
-          customStyle={styles.rowInput}
+          customStyle={[
+            styles.rowInput,
+            !inputValues.amount.isValid && styles.invalidInput,
+          ]}
         />
 
         <Input
@@ -91,9 +143,12 @@ export default function ExpenseForm({
             maxLength: 10,
             onChangeText: (enteredValue) =>
               inputChangedHandler("date", enteredValue),
-            value: inputValues.date,
+            value: inputValues.date.value,
           }}
-          customStyle={styles.rowInput}
+          customStyle={[
+            styles.rowInput,
+            !inputValues.date.isValid && styles.invalidInput,
+          ]}
         />
       </View>
 
@@ -104,8 +159,11 @@ export default function ExpenseForm({
           autoCorrect: false,
           onChangeText: (enteredValue) =>
             inputChangedHandler("description", enteredValue),
-          value: inputValues.description,
+          value: inputValues.description.value,
         }}
+        customStyle={
+          !inputValues.description.isValid ? styles.invalidInput : undefined
+        }
       />
 
       <View style={styles.actions}>
@@ -117,6 +175,12 @@ export default function ExpenseForm({
           {isEditing ? "Update" : "Add"}
         </Button>
       </View>
+
+      {formIsInvalid && (
+        <Text style={styles.errorText}>
+          Please correct the highlighted fields.
+        </Text>
+      )}
     </View>
   );
 }
@@ -128,7 +192,7 @@ const styles = StyleSheet.create({
 
   title: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 14,
+    fontSize: 36,
     fontWeight: "700",
     textAlign: "center",
     marginBottom: 20,
@@ -144,6 +208,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  invalidInput: {
+    borderWidth: 1,
+    borderColor: GlobalStyles.colors.error500,
+  },
+
   actions: {
     flexDirection: "row",
     alignItems: "center",
@@ -155,5 +224,12 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 40,
     marginHorizontal: 0,
+  },
+
+  errorText: {
+    color: GlobalStyles.colors.error500,
+    fontSize: 24,
+    textAlign: "center",
+    marginTop: 12,
   },
 });
