@@ -9,9 +9,11 @@ import { StyleSheet, Text, View } from "react-native";
 export default function ManageExpense() {
   const { addExpense, deleteExpense, updateExpense } =
     useContext(ExpensesContext);
+
   const { expenseId } = useLocalSearchParams<{
     expenseId?: string;
   }>();
+
   const isEditing = typeof expenseId === "string" && expenseId.length > 0;
 
   function deleteExpenseHandler() {
@@ -29,7 +31,7 @@ export default function ManageExpense() {
   }
 
   function confirmHandler() {
-    if (isEditing) {
+    if (isEditing && expenseId) {
       updateExpense(expenseId, {
         description: "Updated pair of shoes",
         amount: 79.99,
@@ -42,6 +44,7 @@ export default function ManageExpense() {
         date: new Date(),
       });
     }
+
     router.back();
   }
 
@@ -54,26 +57,46 @@ export default function ManageExpense() {
       />
 
       <View style={styles.container}>
-        <View style={styles.buttons}>
-          <Button style={styles.button} mode="flat" onPress={cancelHandler}>
-            Cancel
-          </Button>
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>
+              {isEditing ? "Edit your expense" : "Add a new expense"}
+            </Text>
 
-          <Button style={styles.button} onPress={confirmHandler}>
-            {isEditing ? "Update" : "Add"}
-          </Button>
-        </View>
-
-        {isEditing && (
-          <View style={styles.deleteContainer}>
-            <IconButton
-              icon="trash"
-              color={GlobalStyles.colors.error500}
-              size={36}
-              onPress={deleteExpenseHandler}
-            />
+            <Text style={styles.subtitle}>
+              {isEditing
+                ? "Update the information below."
+                : "Enter the details of your new expense."}
+            </Text>
           </View>
-        )}
+
+          <View style={styles.actions}>
+            <Button style={styles.button} mode="flat" onPress={cancelHandler}>
+              Cancel
+            </Button>
+
+            <Button style={styles.button} onPress={confirmHandler}>
+              {isEditing ? "Update" : "Add"}
+            </Button>
+          </View>
+
+          {isEditing && (
+            <View style={styles.deleteSection}>
+              <Text style={styles.deleteTitle}>Manage expense</Text>
+
+              <Text style={styles.deleteDescription}>
+                Remove this expense from your list.
+              </Text>
+
+              <IconButton
+                icon="trash"
+                color={GlobalStyles.colors.error500}
+                size={30}
+                onPress={deleteExpenseHandler}
+              />
+            </View>
+          )}
+        </View>
       </View>
     </>
   );
@@ -82,24 +105,65 @@ export default function ManageExpense() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
   },
-  deleteContainer: {
-    marginTop: 16,
-    paddingTop: 8,
-    borderTopWidth: 2,
-    borderTopColor: GlobalStyles.colors.primary200,
-    alignItems: "center",
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 24,
+    justifyContent: "space-between",
   },
-  buttons: {
+
+  header: {
+    marginBottom: 32,
+  },
+
+  title: {
+    color: GlobalStyles.colors.primary50,
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    color: GlobalStyles.colors.primary200,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+
+  actions: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: "auto",
+    paddingTop: 32,
   },
 
   button: {
-    minWidth: 120,
-    marginHorizontal: 8,
+    flex: 1,
+    marginHorizontal: 6,
+  },
+
+  deleteSection: {
+    marginTop: 32,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: GlobalStyles.colors.primary200,
+    alignItems: "center",
+  },
+
+  deleteTitle: {
+    color: GlobalStyles.colors.primary50,
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+
+  deleteDescription: {
+    color: GlobalStyles.colors.primary200,
+    fontSize: 14,
+    marginBottom: 14,
   },
 });
