@@ -1,5 +1,4 @@
 import ExpenseForm from "@/components/manage-expense/ExpenseForm";
-import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import { GlobalStyles } from "@/constants/theme";
 import { ExpensesContext } from "@/store/expenses-context";
@@ -110,46 +109,50 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 24,
-    justifyContent: "space-between",
+    paddingTop: 26,
+    paddingBottom: 18,
   },
 
   header: {
-    marginBottom: 32,
+    marginBottom: 0,
   },
 
   title: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "700",
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
   subtitle: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 12,
+    lineHeight: 18,
+  },
+
+  formWrapper: {
+    flex: 1,
+    justifyContent: "flex-end",
   },
 
   deleteSection: {
-    marginTop: 32,
-    paddingTop: 20,
+    marginTop: 22,
+    paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: GlobalStyles.colors.primary200,
+    borderTopColor: "rgba(255, 255, 255, 0.15)",
     alignItems: "center",
   },
 
   deleteTitle: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
     marginBottom: 4,
   },
 
   deleteDescription: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 14,
-    marginBottom: 14,
+    fontSize: 13,
+    marginBottom: 12,
   },
 });
