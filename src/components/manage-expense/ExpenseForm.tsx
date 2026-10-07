@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import Input from "./Input";
 import Button from "../ui/Button";
 import { GlobalStyles } from "@/constants/theme";
-import { addExpense } from "@/constants/expenses.types";
+import { addExpense, Expense } from "@/constants/expenses.types";
+import { getFormattedDate } from "@/utils/date";
 
 type InputIdentifier = "amount" | "date" | "description";
 
@@ -11,13 +12,19 @@ interface Props {
   onCancel: () => void;
   onSubmit: (expenseData: addExpense) => void;
   isEditing: boolean;
+  defaultValues: Expense;
 }
 
-export default function ExpenseForm({ onCancel, onSubmit, isEditing }: Props) {
+export default function ExpenseForm({
+  onCancel,
+  onSubmit,
+  isEditing,
+  defaultValues,
+}: Props) {
   const [inputValues, setInputValues] = useState({
-    amount: "",
-    date: "",
-    description: "",
+    amount: defaultValues ? defaultValues.amount.toString() : "",
+    date: defaultValues ? getFormattedDate(defaultValues.date) : "",
+    description: defaultValues ? defaultValues.description.toString() : "",
   });
 
   function inputChangedHandler(

@@ -8,12 +8,14 @@ import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
-  const { addExpense, deleteExpense, updateExpense } =
+  const { addExpense, deleteExpense, updateExpense ,expenses} =
     useContext(ExpensesContext);
 
   const { expenseId } = useLocalSearchParams<{
     expenseId?: string;
   }>();
+
+  const selectedExpense = expenses.find(expense => expense.id === expenseId)
 
   const isEditing = typeof expenseId === "string" && expenseId.length > 0;
 
@@ -68,6 +70,7 @@ export default function ManageExpense() {
               isEditing={isEditing}
               onCancel={cancelHandler}
               onSubmit={confirmHandler}
+              defaultValues={selectedExpense}
             />
           </View>
 
