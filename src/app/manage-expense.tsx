@@ -1,16 +1,20 @@
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import { GlobalStyles } from "@/constants/theme";
+import { ExpensesContext } from "@/store/expenses-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
+  const {addExpense , deleteExpense , updateExpense} = useContext(ExpensesContext)
   const { expenseId } = useLocalSearchParams<{
     expenseId?: string | string[];
   }>();
   const isEditing = typeof expenseId === "string" && expenseId.length > 0;
 
   function deleteExpenseHandler() {
+    deleteExpense()
     router.back();
   }
 
@@ -19,6 +23,11 @@ export default function ManageExpense() {
   }
 
   function confirmHandler() {
+    if(isEditing){
+      updateExpense(expenseId)
+    }else{
+      addExpense()
+    }
     router.back();
   }
 
