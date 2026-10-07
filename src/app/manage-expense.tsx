@@ -1,7 +1,7 @@
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import { GlobalStyles } from "@/constants/theme";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
@@ -10,11 +10,17 @@ export default function ManageExpense() {
   }>();
   const isEditing = typeof expenseId === "string" && expenseId.length > 0;
 
-  function deleteExpenseHandler() {}
+  function deleteExpenseHandler() {
+    router.back();
+  }
 
-  function cancelHandler() {}
+  function cancelHandler() {
+    router.back();
+  }
 
-  function confirmHandler() {}
+  function confirmHandler() {
+    router.back();
+  }
 
   return (
     <>
@@ -25,7 +31,7 @@ export default function ManageExpense() {
       />
 
       <View style={styles.container}>
-        
+
         <View style={styles.buttons}>
           <Button style={styles.button} mode="flat" onPress={cancelHandler}>
             Cancel
