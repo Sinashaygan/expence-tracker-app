@@ -7,14 +7,20 @@ import { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
-  const {addExpense , deleteExpense , updateExpense} = useContext(ExpensesContext)
+  const { addExpense, deleteExpense, updateExpense } =
+    useContext(ExpensesContext);
   const { expenseId } = useLocalSearchParams<{
-    expenseId?: string | string[];
+    expenseId?: string;
   }>();
   const isEditing = typeof expenseId === "string" && expenseId.length > 0;
 
   function deleteExpenseHandler() {
-    deleteExpense()
+    if (!expenseId) {
+      router.back();
+      return;
+    }
+
+    deleteExpense(expenseId);
     router.back();
   }
 
@@ -23,10 +29,18 @@ export default function ManageExpense() {
   }
 
   function confirmHandler() {
-    if(isEditing){
-      updateExpense(expenseId)
-    }else{
-      addExpense()
+    if (isEditing) {
+      updateExpense(expenseId, {
+        description: "Updated pair of shoes",
+        amount: 79.99,
+        date: new Date(),
+      });
+    } else {
+      addExpense({
+        description: "A new pair of shoes",
+        amount: 49.99,
+        date: new Date(),
+      });
     }
     router.back();
   }
@@ -40,7 +54,6 @@ export default function ManageExpense() {
       />
 
       <View style={styles.container}>
-
         <View style={styles.buttons}>
           <Button style={styles.button} mode="flat" onPress={cancelHandler}>
             Cancel
