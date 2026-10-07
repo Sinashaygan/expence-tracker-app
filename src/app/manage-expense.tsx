@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 26,
-    paddingBottom: 18,
+    paddingTop: 20,
+    paddingBottom: 14,
   },
 
   header: {
@@ -117,40 +117,42 @@ const styles = StyleSheet.create({
 
   title: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
-    marginBottom: 6,
+    marginBottom: 5,
   },
 
   subtitle: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: 11,
+    lineHeight: 16,
   },
 
   formWrapper: {
-    flex: 1,
-    justifyContent: "flex-end",
+    // flex: 1,
+    justifyContent: "center",
+    paddingTop: 48,
   },
 
   deleteSection: {
-    marginTop: 22,
-    paddingTop: 16,
+    marginTop: 8,
+    paddingTop: 13,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.15)",
+    borderTopColor: "rgba(255, 255, 255, 0.14)",
     alignItems: "center",
   },
 
   deleteTitle: {
     color: GlobalStyles.colors.primary50,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
-    marginBottom: 4,
+    marginBottom: 3,
   },
 
   deleteDescription: {
     color: GlobalStyles.colors.primary200,
-    fontSize: 13,
-    marginBottom: 12,
+    fontSize: 11,
+    marginBottom: 8,
   },
 });
+

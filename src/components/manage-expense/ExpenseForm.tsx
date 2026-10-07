@@ -118,17 +118,17 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginBottom: 22,
     color: GlobalStyles.colors.primary50,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
+    marginBottom: 20,
   },
 
   inputsRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 12,
+    columnGap: 12,
   },
 
   rowInput: {
@@ -138,12 +138,13 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    marginTop: 22,
+    columnGap: 10,
+    marginTop: 18,
   },
 
   button: {
     flex: 1,
-    minHeight: 42,
+    minHeight: 40,
+    marginHorizontal: 0,
   },
 });
