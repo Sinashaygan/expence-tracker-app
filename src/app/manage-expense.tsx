@@ -1,3 +1,4 @@
+import ExpenseForm from "@/components/manage-expense/ExpenseForm";
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import { GlobalStyles } from "@/constants/theme";
@@ -68,6 +69,10 @@ export default function ManageExpense() {
                 ? "Update the information below."
                 : "Enter the details of your new expense."}
             </Text>
+          </View>
+
+          <View>
+            <ExpenseForm/>
           </View>
 
           <View style={styles.actions}>
