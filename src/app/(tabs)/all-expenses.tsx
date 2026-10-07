@@ -1,5 +1,8 @@
 import ExpensesOutput from "@/components/expenses-output/ExpensesOutput";
+import { ExpensesContext } from "@/store/expenses-context";
+import { useContext } from "react";
 
 export default function AllExpensesScreen() {
-  return <ExpensesOutput periodName="Total" />;
+  const { expenses } = useContext(ExpensesContext);
+  return <ExpensesOutput expenses={expenses} periodName="Total" fallBackText="No registered expenses found."/>;
 }
