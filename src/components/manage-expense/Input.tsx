@@ -10,11 +10,13 @@ import {
 interface Props {
   label: string;
   textInputConfig?: TextInputProps;
+  customStyle?: object;
 }
 
-export default function Input({ label, textInputConfig }: Props) {
+export default function Input({ label, textInputConfig, customStyle }: Props) {
+  const haveCustomStyle = !!customStyle;
   return (
-    <View style={styles.inputContainer}>
+    <View style={[styles.inputContainer, haveCustomStyle && customStyle]}>
       <Text style={styles.label}>{label}</Text>
 
       <TextInput
