@@ -3,8 +3,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TextInputProps,
   View,
+  type TextInputProps,
 } from "react-native";
 
 interface Props {
@@ -16,7 +16,15 @@ export default function Input({ label, textInputConfig }: Props) {
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput {...textInputConfig} style={styles.input}/>
+
+      <TextInput
+        {...textInputConfig}
+        style={[
+          styles.input,
+          textInputConfig?.multiline && styles.inputMultiline,
+          textInputConfig?.style,
+        ]}
+      />
     </View>
   );
 }
@@ -36,6 +44,10 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 6,
     fontSize: 18,
-    color:GlobalStyles.colors.primary700
+    color: GlobalStyles.colors.primary700,
+  },
+  inputMultiline: {
+    minHeight: 100,
+    textAlignVertical: "top",
   },
 });
