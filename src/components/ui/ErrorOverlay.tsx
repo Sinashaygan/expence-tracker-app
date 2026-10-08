@@ -1,42 +1,35 @@
 import { StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "@/constants/theme";
+import Button from "./Button";
 
 type ErrorOverlayProps = {
   message?: string;
+  onRetry?: () => void;
 };
 
 export default function ErrorOverlay({
   message = "Something went wrong.",
+  onRetry,
 }: ErrorOverlayProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>An error occurred</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={styles.errorText}>{message}</Text>
+
+      {onRetry && <Button onPress={onRetry}>Try again</Button>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    backgroundColor: GlobalStyles.colors.primary800,
+    gap: 12,
+    marginTop: 32,
   },
 
-  title: {
-    color: GlobalStyles.colors.error500,
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-
-  message: {
-    color: GlobalStyles.colors.primary200,
-    fontSize: 14,
-    lineHeight: 21,
+  errorText: {
+    color: GlobalStyles.colors.error50,
+    fontSize: 15,
     textAlign: "center",
   },
 });
