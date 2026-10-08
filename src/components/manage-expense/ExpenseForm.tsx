@@ -10,8 +10,9 @@ type InputIdentifier = "amount" | "date" | "description";
 
 interface Props {
   onCancel: () => void;
-  onSubmit: (expenseData: ExpenseData) => void;
+  onSubmit: (expenseData: ExpenseData) => Promise<void>;
   isEditing: boolean;
+  isSubmitting: boolean;
   defaultValues?: Expense;
 }
 
@@ -49,6 +50,7 @@ export default function ExpenseForm({
   onCancel,
   onSubmit,
   isEditing,
+  isSubmitting,
   defaultValues,
 }: Props) {
   const [inputValues, setInputValues] = useState<InputValues>(() =>
@@ -109,7 +111,7 @@ export default function ExpenseForm({
       description,
     };
 
-    onSubmit(expenseData);
+    void onSubmit(expenseData);
   }
 
   const formIsInvalid =
@@ -161,12 +163,21 @@ export default function ExpenseForm({
       />
 
       <View style={styles.actions}>
-        <Button style={styles.button} mode="flat" onPress={onCancel}>
+        <Button
+          style={styles.button}
+          mode="flat"
+          onPress={onCancel}
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
 
-        <Button style={styles.button} onPress={submitHandler}>
-          {isEditing ? "Update" : "Add"}
+        <Button
+          style={styles.button}
+          onPress={submitHandler}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : isEditing ? "Update" : "Add"}
         </Button>
       </View>
 

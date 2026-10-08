@@ -5,10 +5,10 @@ import { GlobalStyles } from "@/constants/theme";
 import { ExpensesContext } from "@/store/expenses-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 export default function ManageExpense() {
-  const { addExpense, deleteExpense, updateExpense, expenses } =
+  const { addExpense, deleteExpense, updateExpense, expenses, isMutating } =
     useContext(ExpensesContext);
 
   const { expenseId: rawExpenseId } = useLocalSearchParams<{
@@ -21,28 +21,42 @@ export default function ManageExpense() {
 
   const isEditing = Boolean(expenseId);
 
-  function deleteExpenseHandler() {
+  async function deleteExpenseHandler() {
     if (!expenseId) {
       router.back();
       return;
     }
 
-    deleteExpense(expenseId);
-    router.back();
+    try {
+      await deleteExpense(expenseId);
+      router.back();
+    } catch (error) {
+      Alert.alert(
+        "Could not delete expense",
+        error instanceof Error ? error.message : "Please try again.",
+      );
+    }
   }
 
   function cancelHandler() {
     router.back();
   }
 
-  function confirmHandler(expenseData: ExpenseData) {
-    if (isEditing && expenseId) {
-      updateExpense(expenseId, expenseData);
-    } else {
-      addExpense(expenseData);
-    }
+  async function confirmHandler(expenseData: ExpenseData) {
+    try {
+      if (isEditing && expenseId) {
+        await updateExpense(expenseId, expenseData);
+      } else {
+        await addExpense(expenseData);
+      }
 
-    router.back();
+      router.back();
+    } catch (error) {
+      Alert.alert(
+        "Could not save expense",
+        error instanceof Error ? error.message : "Please try again.",
+      );
+    }
   }
 
   return (
@@ -73,6 +87,7 @@ export default function ManageExpense() {
               onCancel={cancelHandler}
               onSubmit={confirmHandler}
               defaultValues={selectedExpense}
+              isSubmitting={isMutating}
             />
           </View>
 
@@ -89,6 +104,7 @@ export default function ManageExpense() {
                 color={GlobalStyles.colors.error500}
                 size={30}
                 onPress={deleteExpenseHandler}
+                disabled={isMutating}
               />
             </View>
           )}
@@ -155,4 +171,3 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-
