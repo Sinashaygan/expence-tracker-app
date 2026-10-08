@@ -1,9 +1,10 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import ExpensesSummery from "./ExpensesSummery";
 import ExpensesList from "./ExpensesList";
 import { Expense } from "@/constants/expenses.types";
 import { GlobalStyles } from "@/constants/theme";
-import Button from "@/components/ui/Button";
+import ExpensesLoading from "../ui/LoadingOverlay";
+import ExpensesError from "../ui/ErrorOverlay";
 
 interface Props {
   expenses: Expense[];
@@ -25,28 +26,9 @@ export default function ExpensesOutput({
   let content = <Text style={styles.infoText}>{fallBackText}</Text>;
 
   if (isLoading) {
-    content = (
-      <ActivityIndicator
-        size="large"
-        color={GlobalStyles.colors.primary200}
-        style={styles.loadingIndicator}
-      />
-    );
+    content = <ExpensesLoading />;
   } else if (error) {
-    content = (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Button
-          onPress={() => {
-            onRetry().catch((retryError) => {
-              console.error("Failed to retry fetching expenses:", retryError);
-            });
-          }}
-        >
-          Try again
-        </Button>
-      </View>
-    );
+    content = <ExpensesError message={error} onRetry={onRetry} />;
   } else if (expenses.length > 0) {
     content = <ExpensesList expenses={expenses} />;
   }
@@ -71,17 +53,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginTop: 32,
-  },
-  loadingIndicator: {
-    marginTop: 32,
-  },
-  errorContainer: {
-    marginTop: 32,
-    gap: 12,
-  },
-  errorText: {
-    color: GlobalStyles.colors.error50,
-    fontSize: 15,
-    textAlign: "center",
   },
 });

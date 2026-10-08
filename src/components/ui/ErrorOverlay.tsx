@@ -7,7 +7,7 @@ type ErrorOverlayProps = {
   onRetry?: () => void;
 };
 
-export default function ErrorOverlay({
+export default function ExpensesError({
   message = "Something went wrong.",
   onRetry,
 }: ErrorOverlayProps) {

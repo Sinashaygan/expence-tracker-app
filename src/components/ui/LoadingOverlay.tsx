@@ -5,9 +5,7 @@ type LoadingOverlayProps = {
   message?: string;
 };
 
-export default function LoadingOverlay({
-  message = "Loading...",
-}: LoadingOverlayProps) {
+export default function ExpensesLoading({ message = "Loading..." }: LoadingOverlayProps) {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color={GlobalStyles.colors.primary200} />
