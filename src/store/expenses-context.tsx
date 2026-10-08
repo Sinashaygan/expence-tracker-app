@@ -1,99 +1,39 @@
-import { Expense } from "@/constants/expenses.types";
-import { createContext, ReactNode, useReducer } from "react";
-
-type ExpenseData = {
-  description: string;
-  amount: number;
-  date: Date;
-};
-
-type UpdateExpenseData = Partial<ExpenseData>;
+import type { Expense, ExpenseData } from "@/constants/expenses.types";
+import {
+  deleteExpense as deleteExpenseRequest,
+  fetchExpenses as fetchExpensesRequest,
+  storeExpense,
+  updateExpense as updateExpenseRequest,
+} from "@/services/expenses";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 
 type ExpensesState = Expense[];
 
 type Action =
-  | {
-      type: "ADD";
-      payload: ExpenseData;
-    }
-  | {
-      type: "UPDATE";
-      payload: {
-        id: string;
-        data: UpdateExpenseData;
-      };
-    }
-  | {
-      type: "DELETE";
-      payload: string;
-    };
-
-const DUMMY_EXPENSES: Expense[] = [
-  {
-    id: "e1",
-    description: "A pair of shoes",
-    amount: 59.99,
-    date: new Date("2021-12-19"),
-  },
-  {
-    id: "e2",
-    description: "A pair of trousers",
-    amount: 89.29,
-    date: new Date("2022-01-05"),
-  },
-  {
-    id: "e3",
-    description: "Some bananas",
-    amount: 5.99,
-    date: new Date("2021-12-01"),
-  },
-  {
-    id: "e4",
-    description: "A book",
-    amount: 14.99,
-    date: new Date("2021-12-01"),
-  },
-];
+  | { type: "SET"; payload: Expense[] }
+  | { type: "ADD"; payload: Expense }
+  | { type: "UPDATE"; payload: Expense }
+  | { type: "DELETE"; payload: string };
 
 function expensesReducer(state: ExpensesState, action: Action): ExpensesState {
   switch (action.type) {
-    case "ADD": {
-      const id = new Date().toISOString() + Math.random().toString();
-
-      const newExpense: Expense = {
-        ...action.payload,
-        id,
-      };
-
-      return [newExpense, ...state];
-    }
-
-    case "UPDATE": {
-      const updatableExpenseIndex = state.findIndex(
-        (expense) => expense.id === action.payload.id,
+    case "SET":
+      return action.payload;
+    case "ADD":
+      return [action.payload, ...state];
+    case "UPDATE":
+      return state.map((expense) =>
+        expense.id === action.payload.id ? action.payload : expense,
       );
-
-      if (updatableExpenseIndex === -1) {
-        return state;
-      }
-
-      const updatableExpense = state[updatableExpenseIndex];
-
-      const updatedExpense: Expense = {
-        ...updatableExpense,
-        ...action.payload.data,
-      };
-
-      const updatedExpenses = [...state];
-      updatedExpenses[updatableExpenseIndex] = updatedExpense;
-
-      return updatedExpenses;
-    }
-
-    case "DELETE": {
+    case "DELETE":
       return state.filter((expense) => expense.id !== action.payload);
-    }
-
     default:
       return state;
   }
@@ -101,55 +41,133 @@ function expensesReducer(state: ExpensesState, action: Action): ExpensesState {
 
 type ExpensesContextValue = {
   expenses: Expense[];
-  addExpense: (expenseData: ExpenseData) => void;
-  deleteExpense: (id: string) => void;
-  updateExpense: (id: string, expenseData: UpdateExpenseData) => void;
+  isLoading: boolean;
+  isMutating: boolean;
+  error: string | null;
+  fetchExpenses: () => Promise<void>;
+  addExpense: (expenseData: ExpenseData) => Promise<Expense>;
+  deleteExpense: (id: string) => Promise<void>;
+  updateExpense: (id: string, expenseData: ExpenseData) => Promise<Expense>;
 };
 
 export const ExpensesContext = createContext<ExpensesContextValue>({
   expenses: [],
-  addExpense: () => {},
-  deleteExpense: () => {},
-  updateExpense: () => {},
+  isLoading: false,
+  isMutating: false,
+  error: null,
+  fetchExpenses: async () => {},
+  addExpense: async () => {
+    throw new Error("ExpensesContextProvider is missing.");
+  },
+  deleteExpense: async () => {},
+  updateExpense: async () => {
+    throw new Error("ExpensesContextProvider is missing.");
+  },
 });
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error
+    ? error.message
+    : "An unexpected error occurred.";
+}
 
 export default function ExpensesContextProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
+  const [expensesState, dispatch] = useReducer(expensesReducer, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function addExpense(expenseData: ExpenseData) {
-    dispatch({
-      type: "ADD",
-      payload: expenseData,
-    });
-  }
+  const fetchExpenses = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-  function deleteExpense(id: string) {
-    dispatch({
-      type: "DELETE",
-      payload: id,
-    });
-  }
+    try {
+      const expenses = await fetchExpensesRequest();
+      dispatch({ type: "SET", payload: expenses });
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+      throw requestError;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  function updateExpense(id: string, expenseData: UpdateExpenseData) {
-    dispatch({
-      type: "UPDATE",
-      payload: {
-        id,
-        data: expenseData,
-      },
-    });
-  }
+  const addExpense = useCallback(async (expenseData: ExpenseData) => {
+    setIsMutating(true);
+    setError(null);
 
-  const contextValue: ExpensesContextValue = {
-    expenses: expensesState,
-    addExpense,
-    deleteExpense,
-    updateExpense,
-  };
+    try {
+      const expense = await storeExpense(expenseData);
+      dispatch({ type: "ADD", payload: expense });
+      return expense;
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+      throw requestError;
+    } finally {
+      setIsMutating(false);
+    }
+  }, []);
+
+  const deleteExpense = useCallback(async (id: string) => {
+    setIsMutating(true);
+    setError(null);
+
+    try {
+      await deleteExpenseRequest(id);
+      dispatch({ type: "DELETE", payload: id });
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+      throw requestError;
+    } finally {
+      setIsMutating(false);
+    }
+  }, []);
+
+  const updateExpense = useCallback(
+    async (id: string, expenseData: ExpenseData) => {
+      setIsMutating(true);
+      setError(null);
+
+      try {
+        const expense = await updateExpenseRequest(id, expenseData);
+        dispatch({ type: "UPDATE", payload: expense });
+        return expense;
+      } catch (requestError) {
+        setError(getErrorMessage(requestError));
+        throw requestError;
+      } finally {
+        setIsMutating(false);
+      }
+    },
+    [],
+  );
+
+  const contextValue = useMemo<ExpensesContextValue>(
+    () => ({
+      expenses: expensesState,
+      isLoading,
+      isMutating,
+      error,
+      fetchExpenses,
+      addExpense,
+      deleteExpense,
+      updateExpense,
+    }),
+    [
+      expensesState,
+      isLoading,
+      isMutating,
+      error,
+      fetchExpenses,
+      addExpense,
+      deleteExpense,
+      updateExpense,
+    ],
+  );
 
   return (
     <ExpensesContext.Provider value={contextValue}>
