@@ -7,13 +7,24 @@ interface Props {
   size: number;
   color: ComponentProps<typeof Ionicons>["color"];
   onPress: () => void;
+  disabled?: boolean;
 }
 
-export default function IconButton({ icon, size, color, onPress }: Props) {
+export default function IconButton({
+  icon,
+  size,
+  color,
+  onPress,
+  disabled = false,
+}: Props) {
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => pressed && styles.pressed}
+      disabled={disabled}
+      style={({ pressed }) => [
+        pressed && styles.pressed,
+        disabled && styles.disabled,
+      ]}
     >
       <View style={styles.buttonContainer}>
         <Ionicons name={icon} size={size} color={color} />
@@ -31,5 +42,8 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.75,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });
