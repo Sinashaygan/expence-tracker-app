@@ -10,7 +10,7 @@ export default function LoadingOverlay({
 }: LoadingOverlayProps) {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={GlobalStyles.colors.primary50} />
+      <ActivityIndicator size="large" color={GlobalStyles.colors.primary200} />
 
       <Text style={styles.text}>{message}</Text>
     </View>
@@ -19,15 +19,14 @@ export default function LoadingOverlay({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: GlobalStyles.colors.primary800,
     gap: 12,
+    marginTop: 32,
   },
 
   text: {
-    color: GlobalStyles.colors.primary50,
+    color: GlobalStyles.colors.primary200,
     fontSize: 14,
   },
 });
