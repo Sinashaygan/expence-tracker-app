@@ -2,8 +2,18 @@ import { router, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { GlobalStyles } from "@/constants/theme";
 import IconButton from "@/components/ui/IconButton";
+import { ExpensesContext } from "@/store/expenses-context";
+import { useContext, useEffect } from "react";
 
 export default function TabsLayout() {
+  const { fetchExpenses } = useContext(ExpensesContext);
+
+  useEffect(() => {
+    fetchExpenses().catch((error) => {
+      console.error("Failed to fetch expenses:", error);
+    });
+  }, [fetchExpenses]);
+
   return (
     <Tabs
       screenOptions={{
