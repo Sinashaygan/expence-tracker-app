@@ -7,14 +7,25 @@ interface Props {
   onPress: () => void;
   mode?: string;
   style?: object;
+  disabled?: boolean;
 }
 
-export default function Button({ children, onPress, mode, style }: Props) {
+export default function Button({
+  children,
+  onPress,
+  mode,
+  style,
+  disabled = false,
+}: Props) {
   return (
     <View style={style}>
       <Pressable
         onPress={onPress}
-        style={({ pressed }) => pressed && styles.pressed}
+        disabled={disabled}
+        style={({ pressed }) => [
+          pressed && styles.pressed,
+          disabled && styles.disabled,
+        ]}
       >
         <View style={[styles.button, mode === "flat" && styles.flat]}>
           <Text style={[styles.buttonText, mode === "flat" && styles.flat]}>
@@ -45,5 +56,8 @@ const styles = StyleSheet.create({
     opacity: 0.75,
     backgroundColor: GlobalStyles.colors.primary200,
     borderRadius: 4,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });
